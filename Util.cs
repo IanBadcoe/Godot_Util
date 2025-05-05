@@ -22,11 +22,11 @@ namespace Godot_Util
         }
 
         [Conditional("DEBUG")]
-        internal static void Assert(bool b)
+        internal static void Assert(bool b, string message = null)
         {
             if (!b)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(message);
             }
         }
     }
