@@ -57,7 +57,7 @@ namespace Godot_Util.CSharp_Util
             get => ForwardsInner.Count;
         }
 
-        private void Add(BoundedValue t1, Key t2)
+        void Add(BoundedValue t1, Key t2)
         {
             ForwardsInner[t2] = t1;
             SpaceMap.Insert(t1);

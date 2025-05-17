@@ -51,7 +51,7 @@ namespace Godot_Util
             Stack.RemoveAt(Stack.Count - 1);
         }
 
-        private static void Accumulate(string name, float time)
+        static void Accumulate(string name, float time)
         {
             if (!SliceTimings.ContainsKey(name))
             {

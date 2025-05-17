@@ -29,17 +29,17 @@ namespace Godot_Util
         //
         // Private Constants
         //
-        private const int MBIG = Int32.MaxValue;
-        private const int MSEED = 161803398;
-        private const int MZ = 0;
+        const int MBIG = Int32.MaxValue;
+        const int MSEED = 161803398;
+        const int MZ = 0;
 
 
         //
         // Member Variables
         //
-        private int inext;
-        private int inextp;
-        private readonly int[] SeedArray = new int[56];
+        int inext;
+        int inextp;
+        readonly int[] SeedArray = new int[56];
 
         //
         // Public Constants
@@ -134,7 +134,7 @@ namespace Godot_Util
             return (InternalSample() * (1.0f / MBIG));
         }
 
-        private int InternalSample()
+        int InternalSample()
         {
             int retVal;
             int locINext = inext;
@@ -185,7 +185,7 @@ namespace Godot_Util
             return InternalSample();
         }
 
-        private float GetSampleForLargeRange()
+        float GetSampleForLargeRange()
         {
             // The distribution of float value returned by Sample
             // is not distributed well enough for a large range.
