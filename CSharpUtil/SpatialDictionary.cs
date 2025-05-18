@@ -14,7 +14,7 @@ namespace Godot_Util.CSharp_Util
     }
 
     // store a value against an IBounded key, so we can search by the key value, OR, by location in space
-    [DebuggerDisplay("{Forwards.Count} {ReverseInner.Count}")]
+    [DebuggerDisplay("{Forwards.Count} ({SpaceMap.GetBounds().Min.X}, {SpaceMap.GetBounds().Min.Y}, {SpaceMap.GetBounds().Min.Z}) -> ({SpaceMap.GetBounds().Max.X}, {SpaceMap.GetBounds().Max.Y}, {SpaceMap.GetBounds().Max.Z})")]
     public class SpatialDictionary<Key, BoundedValue> : IEnumerable<KeyValuePair<Key, BoundedValue>> where BoundedValue : class, ISpatialValue<Key>
     {
         Dictionary<Key, BoundedValue> ForwardsInner = [];
