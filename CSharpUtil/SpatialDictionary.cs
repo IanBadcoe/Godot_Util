@@ -31,17 +31,17 @@ namespace Godot_Util.CSharp_Util
             }
         }
 
-        public IEnumerable<Key> FindKeys(ImBounds bounds)
+        public IEnumerable<Key> FindKeys(ImBounds bounds, IReadOnlyRTree.SearchMode mode)
         {
-            foreach(BoundedValue value in SpaceMap.Search(bounds))
+            foreach(BoundedValue value in SpaceMap.Search(bounds, mode))
             {
                 yield return value.Key;
             }
         }
 
-        public IEnumerable<BoundedValue> FindValues(ImBounds bounds)
+        public IEnumerable<BoundedValue> FindValues(ImBounds bounds, IReadOnlyRTree.SearchMode mode)
         {
-            foreach(BoundedValue idx in SpaceMap.Search(bounds)) {
+            foreach(BoundedValue idx in SpaceMap.Search(bounds, mode)) {
                 yield return idx;
             }
         }
@@ -76,7 +76,9 @@ namespace Godot_Util.CSharp_Util
 
         public bool Contains(BoundedValue val)
         {
-            return FindValues(val.GetBounds()).Where(x => ReferenceEquals(x, val)).Any();
+            return FindValues(val.GetBounds(), IReadOnlyRTree.SearchMode.ExactMatch)
+                .Where(x => ReferenceEquals(x, val))
+                .Any();
         }
 
         public bool Contains(Key idx)
