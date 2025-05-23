@@ -297,12 +297,6 @@ namespace Godot_Util
             return new ClRand(Next());
         }
 
-        // a ImVec3 between (0, 0, 0) and (1, 1, 1)
-        public ImVec3 ImVec3()
-        {
-            return new ImVec3(Float(), Float(), Float());
-        }
-
         public T EnumerationValue<T>()
         {
             var arr = Enum.GetValues(typeof(T));
