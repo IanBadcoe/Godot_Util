@@ -13,9 +13,10 @@ namespace Godot_Util
             return that.Aggregate(Vector3.Zero, (x, y) => x + y);
         }
 
+        // should try to deprecate
         internal static void ForEach<T>(this IEnumerable<T> that, Action<T> action)
         {
-            foreach(T item in that)
+            foreach (T item in that)
             {
                 action(item);
             }
