@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Godot;
 
-using Geom_Util;
+using Geom_Util.Immutable;
 
 namespace Godot_Util
 {
@@ -295,12 +295,6 @@ namespace Godot_Util
         public ClRand NewClRand()
         {
             return new ClRand(Next());
-        }
-
-        // a ImVec3 between (0, 0, 0) and (1, 1, 1)
-        public ImVec3 ImVec3()
-        {
-            return new ImVec3(Float(), Float(), Float());
         }
 
         public T EnumerationValue<T>()
