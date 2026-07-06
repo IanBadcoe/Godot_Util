@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 using Godot;
 
-using Geom_Util.Immutable;
-
 namespace Godot_Util
 {
     // taken from MS sample code and only changed in name and

@@ -8,8 +8,6 @@ using System.Linq;
 
 using Godot;
 
-using Godot_Util;
-
 namespace Godot_Util
 {
     static class PoorMansProfiler
