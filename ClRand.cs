@@ -6,7 +6,7 @@ using Godot;
 namespace Godot_Util
 {
     // taken from MS sample code and only changed in name and
-    // making it clonable
+    // making it cloneable
 
     // ==++==
     //
@@ -27,16 +27,16 @@ namespace Godot_Util
         //
         // Private Constants
         //
-        const int MBIG = Int32.MaxValue;
-        const int MSEED = 161803398;
+        const int MAX_INT = Int32.MaxValue;
+        const int MAX_SEED = 161803398;
         const int MZ = 0;
 
 
         //
         // Member Variables
         //
-        int inext;
-        int inextp;
+        int INext;
+        int INextP;
         readonly int[] SeedArray = new int[56];
 
         //
@@ -69,7 +69,7 @@ namespace Godot_Util
             //Initialize our Seed array.
             //This algorithm comes from Numerical Recipes in C (2nd Ed.)
             int subtraction = (Seed == Int32.MinValue) ? Int32.MaxValue : Mathf.Abs(Seed);
-            mj = MSEED - subtraction;
+            mj = MAX_SEED - subtraction;
             SeedArray[55] = mj;
             mk = 1;
             for (int i = 1; i < 55; i++)
@@ -79,7 +79,7 @@ namespace Godot_Util
                 mk = mj - mk;
                 if (mk < 0)
                 {
-                    mk += MBIG;
+                    mk += MAX_INT;
                 }
 
                 mj = SeedArray[ii];
@@ -91,28 +91,33 @@ namespace Godot_Util
                     SeedArray[i] -= SeedArray[1 + (i + 30) % 55];
                     if (SeedArray[i] < 0)
                     {
-                        SeedArray[i] += MBIG;
+                        SeedArray[i] += MAX_INT;
                     }
                 }
             }
-            inext = 0;
-            inextp = 21;
+            INext = 0;
+            INextP = 21;
             Seed = 1;
         }
 
-        internal ClRand Nextrand()
+        ClRand Clone()
         {
-            return new ClRand(Next());
+            return new ClRand(this);
         }
 
-        public ClRand(ClRand old)
+        private ClRand(ClRand old)
         {
-            inext = old.inext;
-            inextp = old.inextp;
+            INext = old.INext;
+            INextP = old.INextP;
             for (int i = 0; i < 56; i++)
             {
                 SeedArray[i] = old.SeedArray[i];
             }
+        }
+
+        private ClRand NextRand()
+        {
+            return new ClRand(Next());
         }
 
         //
@@ -129,41 +134,41 @@ namespace Godot_Util
         {
             //Including this division at the end gives us significantly improved
             //random number distribution.
-            return (InternalSample() * (1.0f / MBIG));
+            return (InternalSample() * (1.0f / MAX_INT));
         }
 
         int InternalSample()
         {
             int retVal;
-            int locINext = inext;
-            int locINextp = inextp;
+            int locINext = INext;
+            int locINextP = INextP;
 
             if (++locINext >= 56)
             {
                 locINext = 1;
             }
 
-            if (++locINextp >= 56)
+            if (++locINextP >= 56)
             {
-                locINextp = 1;
+                locINextP = 1;
             }
 
-            retVal = SeedArray[locINext] - SeedArray[locINextp];
+            retVal = SeedArray[locINext] - SeedArray[locINextP];
 
-            if (retVal == MBIG)
+            if (retVal == MAX_INT)
             {
                 retVal--;
             }
 
             if (retVal < 0)
             {
-                retVal += MBIG;
+                retVal += MAX_INT;
             }
 
             SeedArray[locINext] = retVal;
 
-            inext = locINext;
-            inextp = locINextp;
+            INext = locINext;
+            INextP = locINextP;
 
             return retVal;
         }
@@ -205,7 +210,7 @@ namespace Godot_Util
 
 
         /*=====================================Next=====================================
-        **Returns: An int [minvalue..maxvalue)
+        **Returns: An int [minValue..maxValue)
         **Arguments: minValue -- the least legal value for the Random number.
         **           maxValue -- One greater than the greatest legal return value.
         **Exceptions: None.
@@ -307,7 +312,7 @@ namespace Godot_Util
         /*==================================NextBytes===================================
         **Action:  Fills the byte array with random bytes [0..0x7f].  The entire array is filled.
         **Returns:Void
-        **Arugments:  buffer -- the array to be filled.
+        **Arguments:  buffer -- the array to be filled.
         **Exceptions: None
         ==============================================================================*/
         public void Bytes(byte[] buffer)
