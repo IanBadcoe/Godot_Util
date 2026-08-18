@@ -5,8 +5,16 @@ using Godot;
 
 namespace Godot_Util
 {
-    // taken from MS sample code and only changed in name and
+    // taken from MS sample code and only changed in small details like name and a few more rand methods and
     // making it cloneable
+
+    // one day, I want to declare a IRand interface and then implement that from various implementations such as this
+    // and a Mersenne Twister
+    //
+    // the interface can then also be implemented by a variety of tweaked random object such as e.g. ones that can be initialised to generate
+    // e.g. nearly the same numbers in each run but with a controllable degree of independently random difference
+
+    // and ditto for MultiRand
 
     // ==++==
     //
