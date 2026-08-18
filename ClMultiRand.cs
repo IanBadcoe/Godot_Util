@@ -5,7 +5,7 @@ namespace Godot_Util;
 
 public static class ClRandExtensions
 {
-    public static ClMultiRand GetNewClMultiRand(this ClRand rand)
+    public static ClMultiRand NewClMultiRand(this ClRand rand)
     {
         return new ClMultiRand(rand.Next());
     }
@@ -35,6 +35,11 @@ public class ClMultiRand(int Seed)
         {
             return FindCreateRNG(name);
         }
+    }
+
+    public ClMultiRand NewMultiRand()
+    {
+        return new ClMultiRand(this["new"].Next());
     }
 
     public void Reset()
