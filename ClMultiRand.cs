@@ -5,17 +5,9 @@ using Chickensoft.Collections;
 
 namespace Godot_Util;
 
-public static class ClRandExtensions
-{
-    public static ClMultiRand NewClMultiRand(this ClRand rand)
-    {
-        return new ClMultiRand(rand.Next());
-    }
-}
-
 // does not need to be "Cl*" once we have an interface for RNGs
 // as it can just take any RNG through the interface
-public class ClMultiRand(int seed)
+public class ClMultiRand
 {
     // Using ClRand as a basis, supply a whole family of RNGs, unrelated in their number streams, but deterministic from a seed on
     // the MultiRand, and an unique name for each child-RNG, thus:
@@ -29,11 +21,21 @@ public class ClMultiRand(int seed)
     //
     // ClMultiRand MR = new(345);                   // different MR seed initialises _all_ contained RNGs to different sequences
 
-    public int Seed { get; private init; } = seed;                 // .GetHashCode(); <-- this is inconsistent between runs?  and do we even need it?
+    public int SeedHash { get; private init; }                 // .GetHashCode(); <-- this is inconsistent between runs?  and do we even need it?
+
+    public string Name { get; private init; }
 
     readonly Map<string, ClRand> RNGs = [];
 
     static SHA256 Sha256 = SHA256.Create();
+
+    public ClMultiRand(int seed, string name)
+    {
+        SeedHash = ConsistentHash(seed);
+        Name = name;
+
+        // Console.WriteLine($"MultiRand: '{ Name }' initialised with seed-hash: { SeedHash }"); // determinism check, slow...
+    }
 
     public ClRand this [string name]
     {
@@ -43,9 +45,9 @@ public class ClMultiRand(int seed)
         }
     }
 
-    public ClMultiRand NewMultiRand()
+    public ClMultiRand NewMultiRand(string name)
     {
-        return new ClMultiRand(this["new"].Next());
+        return new ClMultiRand(this["new"].Next(), name);
     }
 
     public void Reset()
@@ -54,13 +56,32 @@ public class ClMultiRand(int seed)
         RNGs.Clear();
     }
 
-    int ConsistentHash(string input)
+    static int ConsistentHash(int input)
     {
-        byte[] bytes = Sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+        byte[] buffer = new byte[4];
+
+        buffer[0] = (byte)input;
+        buffer[0] = (byte)(input >> 8);
+        buffer[0] = (byte)(input >> 16);
+        buffer[0] = (byte)(input >> 24);
+
+        return ConsistentHash(buffer);
+    }
+
+    static int ConsistentHash(string input)
+    {
+        byte[] buffer = Encoding.UTF8.GetBytes(input);
+
+        return ConsistentHash(buffer);
+    }
+
+    static int ConsistentHash(byte[] buffer)
+    {
+        byte[] bytes = Sha256.ComputeHash(buffer);
 
         int ret = 0;
 
-        for(int i = 0; i < bytes.Length; i += 4)
+        for (int i = 0; i < bytes.Length; i += 4)
         {
             int here = BitConverter.ToInt32(bytes, i);
 
@@ -78,7 +99,11 @@ public class ClMultiRand(int seed)
             //                                     and also I am seeing inconsistency between runs  of the program
             var name_hash = ConsistentHash(name);
 
-            RNGs[name] = new ClRand(HashCode.Combine(Seed, name_hash));
+            int seed = SeedHash ^ name_hash;
+
+            RNGs[name] = new ClRand(seed);
+
+            // Console.WriteLine($"ClRand: '{ name }' created in ClMultiRand: '{ Name }' with seed: { seed }"); // determinism check, slow...
         }
 
         return RNGs[name];
