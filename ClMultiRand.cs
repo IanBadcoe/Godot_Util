@@ -1,4 +1,6 @@
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using Chickensoft.Collections;
 
 namespace Godot_Util;
@@ -11,7 +13,9 @@ public static class ClRandExtensions
     }
 }
 
-public class ClMultiRand(int Seed)
+// does not need to be "Cl*" once we have an interface for RNGs
+// as it can just take any RNG through the interface
+public class ClMultiRand(int seed)
 {
     // Using ClRand as a basis, supply a whole family of RNGs, unrelated in their number streams, but deterministic from a seed on
     // the MultiRand, and an unique name for each child-RNG, thus:
@@ -25,9 +29,11 @@ public class ClMultiRand(int Seed)
     //
     // ClMultiRand MR = new(345);                   // different MR seed initialises _all_ contained RNGs to different sequences
 
-    int SeedHash { get; init; } = Seed.GetHashCode();
+    public int Seed { get; private init; } = seed;                 // .GetHashCode(); <-- this is inconsistent between runs?  and do we even need it?
 
     readonly Map<string, ClRand> RNGs = [];
+
+    static SHA256 Sha256 = SHA256.Create();
 
     public ClRand this [string name]
     {
@@ -48,13 +54,31 @@ public class ClMultiRand(int Seed)
         RNGs.Clear();
     }
 
+    int ConsistentHash(string input)
+    {
+        byte[] bytes = Sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+        int ret = 0;
+
+        for(int i = 0; i < bytes.Length; i += 4)
+        {
+            int here = BitConverter.ToInt32(bytes, i);
+
+            ret ^= here;
+        }
+
+        return ret;
+    }
+
     ClRand FindCreateRNG(string name)
     {
         if (!RNGs.ContainsKey(name))
         {
-            var name_hash = name.GetHashCode();
+            // var name_hash = name.GetHashCode(); string hash inconsistent across vs. of the library (expected)
+            //                                     and also I am seeing inconsistency between runs  of the program
+            var name_hash = ConsistentHash(name);
 
-            RNGs[name] = new ClRand(HashCode.Combine(SeedHash, name_hash));
+            RNGs[name] = new ClRand(HashCode.Combine(Seed, name_hash));
         }
 
         return RNGs[name];

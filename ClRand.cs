@@ -64,11 +64,6 @@ namespace Godot_Util
         {
         }
 
-        public T RandomFromList<T>(List<T> list)
-        {
-            return list[IntRange(0, list.Count)];
-        }
-
         public ClRand(int Seed)
         {
             int ii;
@@ -194,6 +189,11 @@ namespace Godot_Util
         public int Next()
         {
             return InternalSample();
+        }
+
+        public T RandomFromList<T>(List<T> list)
+        {
+            return list[IntRange(0, list.Count)];
         }
 
         float GetSampleForLargeRange()
