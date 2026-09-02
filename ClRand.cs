@@ -118,10 +118,10 @@ namespace Godot_Util
             }
         }
 
-        private ClRand NextRand()
-        {
-            return new ClRand(Next());
-        }
+        // private ClRand NextRand()
+        // {
+        //     return new ClRand(Next());
+        // }
 
         //
         // Package Private Methods
@@ -194,6 +194,23 @@ namespace Godot_Util
         public T RandomFromList<T>(List<T> list)
         {
             return list[IntRange(0, list.Count)];
+        }
+
+        public List<T> RandomizeOrder<T>(IEnumerable<T> list)
+        {
+            List<T> temp = [.. list];
+            var ret = new List<T>();
+
+            while(temp.Count > 0)
+            {
+                int idx = IntRange(temp.Count);
+
+                ret.Add(temp[idx]);
+
+                temp.RemoveAt(idx);
+            }
+
+            return ret;
         }
 
         float GetSampleForLargeRange()

@@ -1,12 +1,11 @@
 using System;
 
-namespace Godot_Util
+namespace Godot_Util.Ext;
+
+public static class ObjectExtensions
 {
-    public static class ObjectExtensions
+    public static WeakReference<T> AsWeak<T>(this T that) where T : class
     {
-        public static WeakReference<T> AsWeak<T>(this T that) where T : class
-        {
-            return new WeakReference<T>(that);
-        }
+        return new WeakReference<T>(that);
     }
 }

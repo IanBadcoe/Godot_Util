@@ -1,5 +1,7 @@
 using System;
 
+namespace Godot_Util.Ext;
+
 public static class ArrayExtensions
 {
     public enum SwapMode3

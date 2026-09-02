@@ -1,6 +1,8 @@
 using System.Linq;
 using Godot;
 
+namespace Godot_Util.Ext;
+
 static class MathfExtensions
 {
     public static int Max(params int[] values)
