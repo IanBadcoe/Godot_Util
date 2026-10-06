@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using Chickensoft.Collections;
 
 namespace Godot_Util;
 
@@ -25,7 +25,7 @@ public class ClMultiRand
 
     public string Name { get; private init; }
 
-    readonly Map<string, ClRand> RNGs = [];
+    readonly Dictionary<string, ClRand> RNGs = [];
 
     static SHA256 Sha256 = SHA256.Create();
 
